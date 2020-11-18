@@ -1,5 +1,6 @@
 package com.konrad.brk.KFiszki.model;
 
+import com.konrad.brk.KFiszki.dto.RoleDto;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,9 +15,10 @@ public class Role{
     private String name;
     private Collection<String> usersIds;
 
-    public Role(String name) {
-        this.name = name;
-        this.usersIds = new ArrayList<>();
+    public static Role apply(RoleDto roleDto){
+        Role role = new Role();
+        role.setName(roleDto.getName());
+        return role;
     }
 
     public String getId() {

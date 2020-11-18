@@ -4,14 +4,18 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.konrad.brk.KFiszki.dto.RegistrationDto;
 import com.konrad.brk.KFiszki.dto.UserDto;
+import com.konrad.brk.KFiszki.model.Role;
 import com.konrad.brk.KFiszki.model.User;
+import com.konrad.brk.KFiszki.service.RoleService;
 import com.konrad.brk.KFiszki.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.konrad.brk.KFiszki.config.JWT.SecurityConstants.EXPIRATION_TIME;
@@ -22,12 +26,15 @@ import static com.konrad.brk.KFiszki.config.JWT.SecurityConstants.SECRET;
 public class UserController {
 
     private UserService userService;
+    private RoleService roleService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping("/users")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<UserDto> users = userService.getAllUsers().stream().map(user ->
                 new UserDto.Builder()
@@ -43,6 +50,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{name}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserDto> getUserByName(@PathVariable String name) {
         User user = userService.getUserByUsername(name);
         UserDto userDto = new UserDto.Builder()
@@ -58,6 +66,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteUserById(@PathVariable String id){
         userService.deleteUserById(id);
         return ResponseEntity
@@ -67,7 +76,9 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<String> addNewUser(@RequestBody RegistrationDto registrationDto){
-        userService.addUser(registrationDto);
+        User user = userService.addUser(registrationDto);
+        Role role = roleService.getRoleByRoleName("ROLE_USER");
+        roleService.addRoleToUser(role,user);
         String token = JWT.create()
                 .withSubject(registrationDto.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

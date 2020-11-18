@@ -35,9 +35,6 @@ public class RegistrationDto {
         this.email = email;
     }
 
-    public List<String> getRolesId() {
-        return new ArrayList<>();
-    }
 
     public List<String> getFlashcardsPackagesIds() {
         return new ArrayList<>();

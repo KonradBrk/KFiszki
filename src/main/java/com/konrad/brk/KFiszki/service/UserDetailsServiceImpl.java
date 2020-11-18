@@ -13,7 +13,7 @@ import java.util.List;
 
 @Component
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private UserService userService;
+    private final UserService userService;
 
     public UserDetailsServiceImpl(UserService userService) {
         this.userService = userService;
@@ -23,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         User user = userService.getUserByUsername(s);
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("STANDARD_USER")); //todo - Authorities implementation
+        authorities.add(new SimpleGrantedAuthority(user.getRole().getName()));
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 }

@@ -1,6 +1,5 @@
 package com.konrad.brk.KFiszki.service;
 
-import com.konrad.brk.KFiszki.dto.FlashcardPackageDto;
 import com.konrad.brk.KFiszki.dto.RegistrationDto;
 import com.konrad.brk.KFiszki.exception.UserAlreadyExistsException;
 import com.konrad.brk.KFiszki.exception.UserNotFoundException;
@@ -9,7 +8,6 @@ import com.konrad.brk.KFiszki.model.User;
 import com.konrad.brk.KFiszki.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +31,7 @@ public class UserService implements UserDetailsService {
             throw new UserAlreadyExistsException("Username already exists!");
         }
         String password = passwordEncoder.encode(registrationDto.getPassword());
+
         User user = User.apply(registrationDto, password);
         return userRepository.save(user);
     }
@@ -60,11 +59,10 @@ public class UserService implements UserDetailsService {
         userRepository.delete(user);
     }
 
-    public User addFlashcardPackageToTheUser(String username, FlashcardPackage flashcardPackage){
+    public void addFlashcardPackageToTheUser(String username, FlashcardPackage flashcardPackage){
         User user = getUserByUsername(username);
         user.getFlashcardsPackagesIds().add(flashcardPackage.getId());
         userRepository.save(user);
-        return user;
     }
 
     @Override

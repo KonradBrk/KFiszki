@@ -1,9 +1,14 @@
 package com.konrad.brk.KFiszki.service;
 
+
+import com.konrad.brk.KFiszki.dto.RoleDto;
 import com.konrad.brk.KFiszki.exception.UserRoleAlreadyExistsException;
+import com.konrad.brk.KFiszki.exception.UserRoleNotFoundException;
 import com.konrad.brk.KFiszki.model.Role;
+import com.konrad.brk.KFiszki.model.User;
 import com.konrad.brk.KFiszki.repository.RoleRepository;
 import org.springframework.stereotype.Service;
+
 
 import java.util.Optional;
 
@@ -20,14 +25,18 @@ public class RoleService {
         return roleRepository.findRoleByName(name);
     }
 
-    public Role addRole(String roleName, String userId){
-        if (getOptRoleByName(roleName).isPresent()) {
-            throw new UserRoleAlreadyExistsException("Role already exists!");
-        }
-        Role role = new Role(roleName);
-        if(!userId.isEmpty()){
-            role.addNewUserToRolesListById(userId);
-        }
+    public Role getRoleByRoleName(String name) {
+        return getOptRoleByName(name)
+                .orElseThrow(() -> new UserRoleNotFoundException("There is no role with name: " + name));
+    }
+
+    public Role addRoleToUser(Role role, User user){
+        role.addNewUserToRolesListById(user.getId());
+        return roleRepository.save(role);
+    }
+
+    public Role createNewRole(RoleDto roleDto){
+        Role role = Role.apply(roleDto);
         return roleRepository.save(role);
     }
 }

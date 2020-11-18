@@ -61,4 +61,10 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         ExceptionResponse exResponse = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity(exResponse, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(UserRoleNotFoundException.class)
+    public ResponseEntity handleUserRoleNotFoundException(UserRoleNotFoundException ex, WebRequest request){
+        ExceptionResponse exResponse = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity(exResponse, HttpStatus.NOT_FOUND);
+    }
 }

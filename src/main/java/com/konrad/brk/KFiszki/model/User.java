@@ -15,7 +15,7 @@ public class User implements Serializable {
     private String password;
     private String email;
 
-    private List<String> rolesId;
+    private Role role;
     private List<String> flashcardsPackagesIds;
 
 
@@ -25,7 +25,6 @@ public class User implements Serializable {
         user.username = registrationDto.getUsername();
         user.password = password;
         user.email = registrationDto.getEmail();
-        user.rolesId = registrationDto.getRolesId();
         user.flashcardsPackagesIds = registrationDto.getFlashcardsPackagesIds();
         return user;
     }
@@ -70,12 +69,12 @@ public class User implements Serializable {
         this.flashcardsPackagesIds = flashcardsPackagesIds;
     }
 
-    public List<String> getRoles() {
-        return rolesId;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(List<String> roles) {
-        this.rolesId = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
 
@@ -86,7 +85,7 @@ public class User implements Serializable {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
-                ", rolesId=" + rolesId +
+                ", rolesId=" + role +
                 ", flashcardsPackagesIds=" + flashcardsPackagesIds +
                 '}';
     }
