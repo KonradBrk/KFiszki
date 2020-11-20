@@ -3,7 +3,6 @@ package com.konrad.brk.KFiszki.model;
 import com.konrad.brk.KFiszki.dto.RoleDto;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +13,10 @@ public class Role{
     private String id;
     private String name;
     private Collection<String> usersIds;
+
+    public Role() {
+        this.usersIds = new ArrayList<>();
+    }
 
     public static Role apply(RoleDto roleDto){
         Role role = new Role();

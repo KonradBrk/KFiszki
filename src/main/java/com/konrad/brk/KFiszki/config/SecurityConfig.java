@@ -4,6 +4,7 @@ import com.konrad.brk.KFiszki.config.JWT.JWTAuthenticationFilter;
 import com.konrad.brk.KFiszki.config.JWT.JWTAuthorizationFilter;
 
 import com.konrad.brk.KFiszki.service.UserDetailsServiceImpl;
+import com.konrad.brk.KFiszki.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,10 +24,12 @@ import static com.konrad.brk.KFiszki.config.JWT.SecurityConstants.SIGN_UP_URL;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private UserDetailsServiceImpl userService;
+    private UserDetailsServiceImpl userServiceSecurityImpl;
+    private UserService userService;
     private PasswordEncoder passwordEncoder;
 
-    public SecurityConfig(UserDetailsServiceImpl userService, PasswordEncoder passwordEncoder) {
+    public SecurityConfig(UserDetailsServiceImpl userServiceSecurityImpl, UserService userService, PasswordEncoder passwordEncoder) {
+        this.userServiceSecurityImpl = userServiceSecurityImpl;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -38,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager(), userService))
                 // this disables session creation on Spring Security
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
@@ -46,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
+        auth.userDetailsService(userServiceSecurityImpl).passwordEncoder(passwordEncoder);
     }
 
     @Bean

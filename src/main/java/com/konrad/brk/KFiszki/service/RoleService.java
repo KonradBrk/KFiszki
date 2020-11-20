@@ -30,7 +30,8 @@ public class RoleService {
                 .orElseThrow(() -> new UserRoleNotFoundException("There is no role with name: " + name));
     }
 
-    public Role addRoleToUser(Role role, User user){
+    public Role addUserToRoleCollection(User user){
+        Role role = getRoleByRoleName(user.getRole());
         role.addNewUserToRolesListById(user.getId());
         return roleRepository.save(role);
     }

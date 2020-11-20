@@ -15,16 +15,17 @@ public class User implements Serializable {
     private String password;
     private String email;
 
-    private Role role;
+    private String role;
     private List<String> flashcardsPackagesIds;
 
 
 
-    public static User apply(RegistrationDto registrationDto, String password){
+    public static User apply(RegistrationDto registrationDto, String password, String role){
         User user = new User();
         user.username = registrationDto.getUsername();
         user.password = password;
         user.email = registrationDto.getEmail();
+        user.role = role;
         user.flashcardsPackagesIds = registrationDto.getFlashcardsPackagesIds();
         return user;
     }
@@ -69,11 +70,11 @@ public class User implements Serializable {
         this.flashcardsPackagesIds = flashcardsPackagesIds;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 
