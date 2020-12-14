@@ -1,15 +1,31 @@
 package com.konrad.brk.KFiszki.dto;
 
-import com.konrad.brk.KFiszki.model.Role;
+import com.mongodb.lang.NonNull;
 
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
-//todo - data validation
 public class RegistrationDto {
+    @NonNull
+    @Size(min=3,max=25,message = "Username must have from 3 to 25 characters.")
     private String username;
+    @NonNull
+    @Size(min=3,max=25,message = "Password must have from 3 to 25 characters.")
     private String password;
+    @NonNull
+    @Email(message = "Wrong email has been provided.")
     private String email;
+
+    public RegistrationDto(@NonNull String username, @NonNull String password, @NonNull String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
 
     public String getUsername() {
         return username;

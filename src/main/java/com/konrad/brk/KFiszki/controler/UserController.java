@@ -11,8 +11,10 @@ import com.konrad.brk.KFiszki.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -84,7 +86,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> addNewUser(@RequestBody RegistrationDto registrationDto){
+    public ResponseEntity<String> addNewUser(@Valid @RequestBody RegistrationDto registrationDto){
         User user = userService.addUser(registrationDto);
         roleService.addUserToRoleCollection(user);
         String token = JWT.create()
