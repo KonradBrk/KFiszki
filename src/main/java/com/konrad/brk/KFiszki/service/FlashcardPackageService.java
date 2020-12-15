@@ -58,13 +58,22 @@ public class FlashcardPackageService {
 
     public FlashcardPackage updateFlashcardPackage(String flashcardPackageId, FlashcardPackageDto flashcardPackageDto) {
         FlashcardPackage flashcardPackage = getFlashcardPackageById(flashcardPackageId);
-        flashcardPackage.setFlashcardsIds(flashcardPackageDto.getFlashcardsIds());
-        flashcardPackage.setPackageName(flashcardPackageDto.getPackageName());
+        if (flashcardPackageDto.getFlashcardsIds() != null) flashcardPackage.setFlashcardsIds(flashcardPackageDto.getFlashcardsIds());
+        if (flashcardPackageDto.getPackageName() != null && flashcardPackageDto.getPackageName().length() >= 1) flashcardPackage.setPackageName(flashcardPackageDto.getPackageName());
         flashcardsPackageRepository.save(flashcardPackage);
         return flashcardPackage;
     }
 
     public void updateFlashcardPackage(FlashcardPackage flashcardPackage) {
         flashcardsPackageRepository.save(flashcardPackage);
+    }
+
+    public FlashcardPackage deleteFlashcardFromFlashcardPackage(String flashcardPackageId, String flashcardId) {
+        FlashcardPackage flashcardPackage = getFlashcardPackageById(flashcardPackageId);
+        Flashcard flashcard = flashcardService.getFlashcardById(flashcardId);
+        flashcardPackage.getFlashcardsIds().remove(flashcard.getId());
+        flashcardService.deleteFlashcard(flashcard);
+        flashcardsPackageRepository.save(flashcardPackage);
+        return flashcardPackage;
     }
 }

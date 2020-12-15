@@ -28,7 +28,7 @@ public class FlashcardController {
     }
 
     @PostMapping("/{username}/{flashcardPackageId}/newflashcard")
-    @PreAuthorize("#username == authentication.getName()")
+    @PreAuthorize("#username == authentication.getName() && @flashcardPackageSecurityService.isOwnerOfFlashcardPackage(#username, #flashcardPackageId)")
     public ResponseEntity<FlashcardPackage> addFlashcardToFlashcardPackage(
             @RequestBody FlashcardDto flashcardDto,
             @PathVariable String flashcardPackageId,
@@ -45,7 +45,7 @@ public class FlashcardController {
     }
 
     @GetMapping("/{username}/{flashcardPackageId}/allflashcards")
-    @PreAuthorize("#username == authentication.getName()")
+    @PreAuthorize("#username == authentication.getName() && @flashcardPackageSecurityService.isOwnerOfFlashcardPackage(#username, #flashcardPackageId)")
     public ResponseEntity<List<Flashcard>> getAllFlashcardsFromFlashcardPackage(
             @PathVariable String username,
             @PathVariable String flashcardPackageId){
@@ -60,7 +60,7 @@ public class FlashcardController {
     }
 
     @GetMapping("/{username}/{flashcardPackageId}/{flashcardId}")
-    @PreAuthorize("#username == authentication.getName()")
+    @PreAuthorize("#username == authentication.getName() && @flashcardPackageSecurityService.isOwnerOfFlashcardPackage(#username, #flashcardPackageId)")
     public ResponseEntity<Flashcard> getFlashcardFromFlashcardPackage(
             @PathVariable String username,
             @PathVariable String flashcardPackageId,
@@ -75,19 +75,34 @@ public class FlashcardController {
     }
 
     @DeleteMapping("/{username}/{flashcardPackageId}/{flashcardId}")
-    @PreAuthorize("#username == authentication.getName()")
+    @PreAuthorize("#username == authentication.getName() && @flashcardPackageSecurityService.isOwnerOfFlashcardPackage(#username, #flashcardPackageId)")
     public ResponseEntity<FlashcardPackage> deleteFlashcardFromFlashcardPackage(
             @PathVariable String username,
             @PathVariable String flashcardPackageId,
             @PathVariable String flashcardId){
 
-        FlashcardPackage flashcardPackage = flashcardPackageService.getFlashcardPackageById(flashcardPackageId);
-        flashcardService.deleteFromFlashcardPackageFlashcard(flashcardPackage, flashcardId);
-        flashcardPackageService.updateFlashcardPackage(flashcardPackage);
+        FlashcardPackage flashcardPackage = flashcardPackageService.deleteFlashcardFromFlashcardPackage(flashcardPackageId, flashcardId);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(flashcardPackage);
+    }
 
+    @PatchMapping("/{username}/{flashcardPackageId}/{flashcardId}")
+    @PreAuthorize("#username == authentication.getName() && @flashcardPackageSecurityService.isOwnerOfFlashcardPackage(#username, #flashcardPackageId)")
+    public ResponseEntity<Flashcard> updateFlashcardFromFlashcardPackage(
+            @PathVariable String username,
+            @PathVariable String flashcardPackageId,
+            @PathVariable String flashcardId,
+            @RequestBody FlashcardDto flashcardDto){
+
+        FlashcardPackage flashcardPackage = flashcardPackageService.getFlashcardPackageById(flashcardPackageId);
+        Flashcard flashcard = flashcardService.updateFlashcardFromFlashcardPackage(flashcardPackage, flashcardId, flashcardDto);
+
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(flashcard);
     }
 
 

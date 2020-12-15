@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static org.springframework.http.ResponseEntity.status;
 
 @RestController
@@ -24,7 +26,7 @@ public class FlashcardPackageController {
 
 
     @PostMapping("/{username}/newflashcardpackage")
-    @PreAuthorize("#username == authentication.getName()")
+    @PreAuthorize("#username == authentication.getName() && @flashcardPackageSecurityService.isOwnerOfFlashcardPackage(#username, #flashcardPackageId)")
     public ResponseEntity<FlashcardPackage> addNewFlashcardPackage(@PathVariable String username, @RequestBody FlashcardPackageDto flashcardPackageDto){
         FlashcardPackage flashcardPackage = flashcardPackageService.addFlashcardPackage(flashcardPackageDto);
         userService.addFlashcardPackageToTheUser(username, flashcardPackage);
@@ -34,7 +36,7 @@ public class FlashcardPackageController {
     }
 
     @DeleteMapping("/{username}/{flashcardPackageId}")
-    @PreAuthorize("#username == authentication.getName()")
+    @PreAuthorize("#username == authentication.getName() && @flashcardPackageSecurityService.isOwnerOfFlashcardPackage(#username, #flashcardPackageId)")
     public ResponseEntity<String> deleteFlashcardPackage(@PathVariable String username, @PathVariable String flashcardPackageId){
         flashcardPackageService.deleteFlashcardPackage(flashcardPackageId);
         return ResponseEntity
@@ -43,7 +45,7 @@ public class FlashcardPackageController {
     }
 
     @GetMapping("/{username}/{flashcardPackageId}")
-    @PreAuthorize("#username == authentication.getName()")
+    @PreAuthorize("#username == authentication.getName() && @flashcardPackageSecurityService.isOwnerOfFlashcardPackage(#username, #flashcardPackageId)")
     public ResponseEntity<FlashcardPackage> getFlashcardPackage(@PathVariable String username, @PathVariable String flashcardPackageId){
         FlashcardPackage flashcardPackage = flashcardPackageService.getFlashcardPackageById(flashcardPackageId);
         return ResponseEntity
@@ -51,8 +53,17 @@ public class FlashcardPackageController {
                 .body(flashcardPackage);
     }
 
-    @PatchMapping("/{username}/{flashcardPackageId}")
+    @GetMapping("/{username}/allflashcardpackages")
     @PreAuthorize("#username == authentication.getName()")
+    public ResponseEntity<List<String>> getFlashcardPackage(@PathVariable String username){
+        List<String> flashcardsPackagesIds = userService.getUserByUsername(username).getFlashcardsPackagesIds();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(flashcardsPackagesIds);
+    }
+
+    @PatchMapping("/{username}/{flashcardPackageId}")
+    @PreAuthorize("#username == authentication.getName() && @flashcardPackageSecurityService.isOwnerOfFlashcardPackage(#username, #flashcardPackageId)")
     public ResponseEntity<FlashcardPackage> updateFlashcardPackageName(@PathVariable String username,@PathVariable String flashcardPackageId, @RequestBody FlashcardPackageDto flashcardPackageDto){
         FlashcardPackage flashcardPackage = flashcardPackageService.updateFlashcardPackage(flashcardPackageId,flashcardPackageDto);
         return ResponseEntity

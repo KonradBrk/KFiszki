@@ -55,14 +55,6 @@ public class FlashcardService {
         return flashcards;
     }
 
-    public FlashcardPackage deleteFromFlashcardPackageFlashcard(FlashcardPackage flashcardPackage, String flashcardIdToBeRemoved) {
-        List<String> flashcardsIds = flashcardPackage.getFlashcardsIds();
-        flashcardsIds.remove(flashcardIdToBeRemoved);
-        Optional<Flashcard> flashcardToBeRemoved = flashcardRepository.findById(flashcardIdToBeRemoved);
-        flashcardToBeRemoved.ifPresent(flashcardRepository::delete);
-        return flashcardPackage;
-    }
-
     public Flashcard getFlashcardFromFlashcardPackage(FlashcardPackage flashcardPackage, String flashcardId) {
         List<String> flashcardsIds = flashcardPackage.getFlashcardsIds();
         if (flashcardsIds.contains(flashcardId)){
@@ -70,5 +62,16 @@ public class FlashcardService {
         } else {
             return null;
         }
+    }
+
+    public Flashcard updateFlashcardFromFlashcardPackage(FlashcardPackage flashcardPackage, String flashcardId, FlashcardDto flashcardDto) {
+        Flashcard flashcard = getFlashcardFromFlashcardPackage(flashcardPackage, flashcardId);
+        if (flashcardDto.getReverse() != null && flashcardDto.getReverse().length() >= 1 ) flashcard.setReverse(flashcardDto.getReverse());
+        if (flashcardDto.getFront() != null && flashcardDto.getFront().length() >= 1 ) flashcard.setFront(flashcardDto.getFront());
+        return flashcardRepository.save(flashcard);
+    }
+
+    public void deleteFlashcard(Flashcard flashcard) {
+        flashcardRepository.delete(flashcard);
     }
 }
