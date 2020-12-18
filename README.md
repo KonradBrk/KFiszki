@@ -7,7 +7,7 @@ Register and log in order to get JSON Web Token.
 
 # TODO
 
- - [ ] Front end based on JS React Library.
+ - [ ] Front-end based on JS React Library.
  >The link to the repository will be entered here.
  - [ ] Learning and examination algorithms.
 
