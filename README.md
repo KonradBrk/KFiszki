@@ -5,6 +5,12 @@ Register and log in order to get JSON Web Token.
 > New Users will always have USER role.
 > Role can be changed directly in the database.
 
+# TODO
+
+ - [ ] Front end based on JS React Library.
+ >The link to the repository will be entered here.
+ - [ ] Learning and examination algorithms.
+
 # Description of endpoints
 
 ### All users
