@@ -1,5 +1,9 @@
 # KFiszki
-REST API based on the Java Spring Boot and MongoDB technologies.
+Secured REST API based on the Java Spring Boot and MongoDB technologies.
+Register and log in order to get JSON Web Token.
+
+> New Users will always have USER role.
+> Role can be changed directly in the database.
 
 # Description of endpoints
 
