@@ -23,7 +23,7 @@ POST /api/newrole
 
 
 ### As user
-(packages of flashcards)
+#### (packages of flashcards)
 
 POST /api/{username}/{flashcardPackageId}/newflashcard
 
@@ -35,7 +35,7 @@ DELETE /api/{username}/{flashcardPackageId}/{flashcardId}
 
 PATCH /api/{username}/{flashcardPackageId}/{flashcardId}
 
-### (flashcards directly)
+#### (flashcards directly)
 POST /api/{username}/newflashcardpackage
 
 GET /api/{username}/allflashcardpackages
